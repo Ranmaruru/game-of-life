@@ -28,13 +28,13 @@ def change_blocks_state():  # Changing blocks statement
 
 
 # ---------------------
-def get_block_id(position):  # Gettimg blocks ID
+def get_block_id(position):  # Getting blocks ID
     x_id = math.floor(position[0] * blocks[0] / screen_size[0])
     y_id = math.floor(position[1] * blocks[1] / screen_size[1])
-    return (x_id, y_id)
+    return x_id, y_id
 
 
-def get_block_by_id(id):  # Getting blocks identificator
+def get_block_by_id(id):  # Getting blocks identification
     return list_of_blocks[id[1] * blocks[0] + id[0]]
 
 
@@ -42,6 +42,7 @@ def block_by_pos(mouse_pos: (int, int)) -> object:  # Getting blocks position
     return get_block_by_id(get_block_id(mouse_pos))
 
 
+# TODO REFACTOR
 def count_neighbors(singleblock):  # Checking neighbors
     alive_neighbors = 0
     for x in range(singleblock.block_id[0] - 1, singleblock.block_id[0] + 1, 1):
