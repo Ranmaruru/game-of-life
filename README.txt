@@ -1,2 +1,2 @@
-!Game is not in a functional state currently...!
-:-(
+Game is in a functional state currently!
+:-)
