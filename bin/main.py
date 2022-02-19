@@ -6,10 +6,11 @@ screen_size = width, height = 1000, 1000  # Change this values to scale game scr
 black = (0, 0, 0)
 dead_color = (192, 192, 192)
 alive_color = (255, 255, 0)
-blocks = (10, 10)  # Number of blocks
+blocks = (50, 50)  # Number of blocks
 list_of_blocks = []
-blocks_to_change = []
+blocks_to_change = set()
 alive_blocks = []
+FPS = 60
 
 
 # REFACTOR
@@ -47,7 +48,7 @@ def count_neighbors(single_block):  # Checking neighbors
     alive_neighbors = 0
     for x in range(single_block.block_id[0] - 1, single_block.block_id[0] + 2, 1):
         for y in range(single_block.block_id[1] - 1, single_block.block_id[1] + 2, 1):
-            if x >= 0 and x < blocks[0] and y >= 0 and y < blocks[1]:
+            if 0 <= x < blocks[0] and 0 <= y < blocks[1]:
                 checked_block = get_block_by_id((x, y))
                 if checked_block.is_alive and checked_block is not single_block:
                     alive_neighbors += 1
@@ -95,16 +96,17 @@ def main():
                 is_running = False
         # ----------
         # Game rules
-        for single_block in list_of_blocks:
+        for single_block in alive_blocks:
             if is_simulating:
-
-                alive_neighbors = count_neighbors(single_block)
-                if alive_neighbors > 3 or alive_neighbors < 2 and single_block.is_alive:
-                    blocks_to_change.append(single_block)
-                if alive_neighbors == 3 and not single_block.is_alive:
-                    blocks_to_change.append(single_block)
-
-        pygame.time.wait(1)
+                for x in range(single_block.block_id[0] - 1, single_block.block_id[0] + 2, 1):
+                    for y in range(single_block.block_id[1] - 1, single_block.block_id[1] + 2, 1):
+                        if 0 <= x < blocks[0] and 0 <= y < blocks[1]:
+                            temp_neighbor = get_block_by_id((x, y))
+                            neighbors = count_neighbors(temp_neighbor)
+                            if temp_neighbor.is_alive and (neighbors > 3 or neighbors < 2):
+                                blocks_to_change.add(temp_neighbor)
+                            if not temp_neighbor.is_alive and neighbors == 3:
+                                blocks_to_change.add(temp_neighbor)
 
         change_blocks_state()
 
@@ -113,7 +115,8 @@ def main():
         for single_block in list_of_blocks:
             pygame.draw.rect(screen, single_block.block_color, single_block.get_rect())
             pygame.draw.rect(screen, black, single_block.get_rect(), 1)
-            pygame.display.flip()
+        pygame.time.wait(100)
+        pygame.display.update()
 
 
 if __name__ == '__main__':
