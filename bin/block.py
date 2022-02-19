@@ -1,5 +1,3 @@
-import math
-
 
 class block:
     block_position_x = 0
